@@ -316,7 +316,7 @@ const App: React.FC = () => {
     if (!participantId) return;
     try {
       mediasoupClientRef.current = new MediasoupClient(
-        "http://54.226.35.66:3001",
+        "https:api.caktushub.com",
         participantId,
       );
 
