@@ -316,7 +316,7 @@ const App: React.FC = () => {
     if (!participantId) return;
     try {
       mediasoupClientRef.current = new MediasoupClient(
-        "https://fierier-nonaccordantly-shalanda.ngrok-free.dev",
+        "http://54.226.35.66:3001",
         participantId,
       );
 
