@@ -25,7 +25,7 @@ export class MediasoupClient {
     kind: string;
   }> = [];
   // queue to ensure consumes happen one at a time, preventing race conditions
-  private consumeQueue: Promise<void> = Promise.resolve();
+  private consumeQueue: Promise<MediaStreamTrack | null> = Promise.resolve(null);
 
   constructor(wsUrl: string, participantId: string) {
     this.participantId = participantId;
@@ -107,7 +107,7 @@ export class MediasoupClient {
     };
   }
 
-  private send(message: JSON): void {
+  private send(message: Record<string, any>): void {
     if (this.ws.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(message));
     }
@@ -246,9 +246,10 @@ export class MediasoupClient {
     producerParticipantId: string,
     producerId: string,
   ): Promise<MediaStreamTrack | null> {
-    const track = await (this.consumeQueue = this.consumeQueue.then(() =>
-      this._consumeTrack(producerParticipantId, producerId),
-    ));
+    this.consumeQueue = this.consumeQueue
+      .then(() => this._consumeTrack(producerParticipantId, producerId))
+      .catch(() => null);
+    const track = await this.consumeQueue;
     return track;
   }
 
