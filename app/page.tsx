@@ -316,7 +316,7 @@ const App: React.FC = () => {
     if (!participantId) return;
     try {
       mediasoupClientRef.current = new MediasoupClient(
-        "https:api.caktushub.com",
+        "https://api.caktushub.com",
         participantId,
       );
 
