@@ -25,7 +25,8 @@ export class MediasoupClient {
     kind: string;
   }> = [];
   // queue to ensure consumes happen one at a time, preventing race conditions
-  private consumeQueue: Promise<MediaStreamTrack | null> = Promise.resolve(null);
+  private consumeQueue: Promise<MediaStreamTrack | null> =
+    Promise.resolve(null);
 
   constructor(wsUrl: string, participantId: string) {
     this.participantId = participantId;
@@ -115,13 +116,21 @@ export class MediasoupClient {
 
   public async connect(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
+      const waitForDevice = () => {
+        if (this.device && this.device.loaded) {
+          resolve();
+        } else {
+          setTimeout(waitForDevice, 50);
+        }
+      };
+
       if (this.ws.readyState === WebSocket.OPEN) {
         this.joinRoom();
-        resolve();
+        waitForDevice();
       } else {
         this.ws.onopen = () => {
           this.joinRoom();
-          resolve();
+          waitForDevice();
         };
         this.ws.onerror = reject;
       }

@@ -380,7 +380,6 @@ const App: React.FC = () => {
       // Previously: localVideoRef.current.srcObject = stream → ref was null
       // because the <video> element didn't exist in the DOM yet.
       setLocalStream(stream);
-
       const videoTrack = stream.getVideoTracks()[0];
       const audioTrack = stream.getAudioTracks()[0];
       if (videoTrack) await mediasoupClientRef.current.produceTrack(videoTrack);
